@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/OglasiBackend-Spring.iml" filepath="$PROJECT_DIR$/.idea/OglasiBackend-Spring.iml" />
       <module fileurl="file://$PROJECT_DIR$/oglasiBackend/oglasiBackend.iml" filepath="$PROJECT_DIR$/oglasiBackend/oglasiBackend.iml" />
     </modules>
   </component>

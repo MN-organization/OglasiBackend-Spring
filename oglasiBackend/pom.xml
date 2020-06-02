@@ -62,6 +62,11 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>com.google.apis</groupId>
+			<artifactId>google-api-services-gmail</artifactId>
+			<version>v1-rev20200504-1.30.9</version>
+		</dependency>
 	</dependencies>
 
 	<build>
