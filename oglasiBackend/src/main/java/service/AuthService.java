@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import modeli.User;
 import modeli.Verifikacija;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +47,7 @@ public class AuthService {
         sendEmail(verifikacija);
     }
 
+    @Async
     void sendEmail(Verifikacija verifikacija) {
 
         SimpleMailMessage msg = new SimpleMailMessage();
