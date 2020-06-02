@@ -1,5 +1,6 @@
 package service;
 
+
 import dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,9 @@ import org.springframework.transaction.annotation.Transactional;
 import repozitorijumi.UserRepository;
 import repozitorijumi.VerifikacijaRepository;
 
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import java.io.IOException;
 import java.util.UUID;
 
 @Service
@@ -26,8 +30,10 @@ public class AuthService {
     private PasswordEncoder passwordEncoder;
     @Autowired
     private VerifikacijaRepository verifikacijaRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
-    public void signup(RegisterRequest registerRequest) {
+    public void signup(RegisterRequest registerRequest) throws IOException {
         User user = new User();
         System.out.println(registerRequest.getEmail());
         user.setEmail(registerRequest.getEmail());
@@ -35,19 +41,34 @@ public class AuthService {
         user.setVerifikovan(false);
         userRepository.save(user);
 
-        String token = generateVerificationToken(user);
-        String url = "https://jsonplaceholder.typicode.com/posts";
-        return this.restTemplate.getForObject(url, String.class);
+        Verifikacija verifikacija = generateVerificationToken(user);
+
+        sendEmail(verifikacija);
     }
 
-    private String generateVerificationToken(User user) {
+    void sendEmail(Verifikacija verifikacija) {
+
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setTo(verifikacija.getUser().getEmail());
+
+        msg.setSubject("Verifikacija");
+        msg.setText("Postovani korisnice \n Molimo Vas, verifikujte " +
+                "vas nalog klikom na sledeci link: \n " +
+                "http://localhost:8080/api/auth/verifikacija/"
+                + verifikacija.getToken());// dodati ime na usera
+
+        javaMailSender.send(msg);
+
+    }
+
+    private Verifikacija generateVerificationToken(User user) {
         String token = UUID.randomUUID().toString();
         Verifikacija verifikacija = new Verifikacija();
         verifikacija.setToken(token);
         verifikacija.setUser(user);
 
         verifikacijaRepository.save(verifikacija);
-        return token;
+        return verifikacija;
     }
 
 }
