@@ -1,5 +1,7 @@
 package controller;
 
+import dto.AuthenticationResponse;
+import dto.LoginRequest;
 import dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import modeli.Verifikacija;
@@ -43,5 +45,12 @@ public class AuthController {
         }
         return new ResponseEntity<>("Neuspesna verifikacija - token nije dobar", HttpStatus.OK);
     }
+
+    @PostMapping("/login")
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) throws IOException {
+        System.out.println(loginRequest + " - usao");
+        return authService.login(loginRequest);
+    }
+
 
 }
