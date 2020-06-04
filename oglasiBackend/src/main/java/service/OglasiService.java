@@ -119,7 +119,7 @@ public class OglasiService {
             }
             return "Oglas je uspesno izbrisan iz sacuvanih";
         } else {
-            return "Oglas ne postoji";
+            return "Greska-Oglas ne postoji";
         }
     }
 }
