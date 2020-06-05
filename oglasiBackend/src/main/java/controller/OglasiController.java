@@ -1,6 +1,6 @@
 package controller;
 
-import dto.RegisterRequest;
+import dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import modeli.Oglas;
 import org.springframework.http.HttpStatus;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import service.OglasiService;
 
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -19,8 +18,9 @@ public class OglasiController {
     private final OglasiService oglasiService;
 
     @GetMapping("/{id}")
-    public ResponseEntity<Oglas> vratiOglas(@PathVariable Long id) {
-        return new ResponseEntity<>(oglasiService.vratiOglas(id), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> vratiOglas(@PathVariable Long id) {
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.vratiOglas(id)).poruka("Uspesno vracen oglas").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
@@ -35,8 +35,9 @@ public class OglasiController {
 
 
     @GetMapping
-    public ResponseEntity<List<Oglas>> vratiSve() {
-        return new ResponseEntity<>(oglasiService.vratiSve(), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> vratiSve() {
+        ResponseDto response = ResponseDto.builder().oglasi(oglasiService.vratiSve()).poruka("Uspesno vraceno sve").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/dodaj")

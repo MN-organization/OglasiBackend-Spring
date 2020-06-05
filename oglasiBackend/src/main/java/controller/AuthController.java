@@ -47,9 +47,9 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) throws IOException {
+    public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) throws IOException {
         System.out.println(loginRequest + " - usao");
-        return authService.login(loginRequest);
+        return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
     }
 
 
