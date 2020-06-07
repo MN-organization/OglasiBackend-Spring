@@ -5,6 +5,8 @@ import modeli.Oglas;
 import modeli.SacuvaniOglas;
 import modeli.User;
 import org.springframework.data.domain.Example;
+import org.springframework.data.domain.ExampleMatcher;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,16 @@ public class OglasiService {
 
     @Transactional(readOnly = true)
     public List<Oglas> vratiSve() {
-        return oglasiRepository.findAll();
+        List<Oglas> oglasi = oglasiRepository.findAll();
+        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+        oglasi.forEach(oglas -> {
+            sacuvaniOglasi.forEach(sacuvaniOglas -> {
+                if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
+                    oglas.setSacuvan(true);
+                }
+            });
+        });
+        return oglasi;
     }
 
     @Transactional
@@ -72,25 +83,21 @@ public class OglasiService {
         }
     }
 
-
+    @Transactional(readOnly = true)
     public List<Oglas> vratiMojeOglase() {
-        Oglas og = new Oglas();
-        og.setUser(authService.getCurrentUser());
-        Example<Oglas> example = Example.of(og);
-        return oglasiRepository.findAll(example);
-    }//proveriti
-
-
-    public List<Oglas> vratiSacuvaneOglase() {
-        SacuvaniOglas so = new SacuvaniOglas();
-        so.setUser(authService.getCurrentUser());
-        Example<SacuvaniOglas> example = Example.of(so);
-        List<Oglas> oglasi = new ArrayList<>();
-        sacuvaniOglasRepository.findAll(example).forEach(sacuvaniOglas -> oglasi.add(sacuvaniOglas.getOglas()));
-        return oglasi;/// videti da li moze bolji upit preko join
+        System.out.println(oglasiRepository.findByUser(authService.getCurrentUser()));
+        return oglasiRepository.findByUser(authService.getCurrentUser());
     }
 
+    @Transactional(readOnly = true)
+    public List<Oglas> vratiSacuvaneOglase() {
+        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+        ArrayList<Oglas> oglasi = new ArrayList<>();
+        sacuvaniOglasi.forEach(sacuvaniOglas -> oglasi.add(sacuvaniOglas.getOglas()));
+        return oglasi;
+    }
 
+    @Transactional
     public String sacuvaj(Long id) {
         Optional<Oglas> o = oglasiRepository.findById(id);
         if (o.isPresent()) {
@@ -102,7 +109,7 @@ public class OglasiService {
         }
     }
 
-
+    @Transactional
     public String izbrisiSacuvan(Long id) {
 
         SacuvaniOglas so = new SacuvaniOglas();
@@ -111,7 +118,7 @@ public class OglasiService {
         if (o.isPresent()) {
             so.setOglas(o.get());
             Example<SacuvaniOglas> example = Example.of(so);
-            Optional<SacuvaniOglas> s = sacuvaniOglasRepository.findOne(example);
+            Optional<SacuvaniOglas> s = sacuvaniOglasRepository.findOne(example);// radi ali moze verovatno bez example
             if (s.isPresent()) {
                 sacuvaniOglasRepository.delete(s.get());
             } else {
@@ -121,5 +128,19 @@ public class OglasiService {
         } else {
             return "Greska-Oglas ne postoji";
         }
+    }
+
+
+    public List<Oglas> pretraga(Specification<Oglas> kriterijumi) {
+        List<Oglas> oglasi = oglasiRepository.findAll(Specification.where(kriterijumi));
+        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+        oglasi.forEach(oglas -> {
+            sacuvaniOglasi.forEach(sacuvaniOglas -> {
+                if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
+                    oglas.setSacuvan(true);
+                }
+            });
+        });
+        return oglasi;
     }
 }

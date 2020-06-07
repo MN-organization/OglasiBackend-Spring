@@ -1,8 +1,10 @@
 package controller;
 
+import com.sipios.springsearch.anotation.SearchSpec;
 import dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import modeli.Oglas;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,13 +26,15 @@ public class OglasiController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> izbrisiOglas(@PathVariable Long id) {
-        return new ResponseEntity<>(oglasiService.izbrisiOglas(id), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> izbrisiOglas(@PathVariable Long id) {
+        ResponseDto response = ResponseDto.builder().poruka(oglasiService.izbrisiOglas(id)).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping("/{id}")
-    public ResponseEntity<Oglas> izmeniOglas(@PathVariable Long id) {
-        return new ResponseEntity<>(oglasiService.izmeniOglas(id), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> izmeniOglas(@PathVariable Long id) {
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.izmeniOglas(id)).poruka("Uspesno izmenjen oglas").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
@@ -41,30 +45,40 @@ public class OglasiController {
     }
 
     @PostMapping("/dodaj")
-    public ResponseEntity<Oglas> postaviOglas(@RequestBody Oglas oglas) {
-        return new ResponseEntity<>(oglasiService.save(oglas), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas) {
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.save(oglas)).poruka("Uspesno Postavljen oglas").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/moji")
-    public ResponseEntity<List<Oglas>> vratiMojeOglase() {
-        return new ResponseEntity<>(oglasiService.vratiMojeOglase(), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> vratiMojeOglase() {
+        ResponseDto response = ResponseDto.builder().oglasi(oglasiService.vratiMojeOglase()).poruka("Uspesno vraceni moji oglasi").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/sacuvani")
-    public ResponseEntity<List<Oglas>> vratiSacuvaneOglase() {
-        return new ResponseEntity<>(oglasiService.vratiSacuvaneOglase(), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> vratiSacuvaneOglase() {
+        ResponseDto response = ResponseDto.builder().oglasi(oglasiService.vratiSacuvaneOglase()).poruka("Uspesno vraceni sacuvani oglasi").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 
     @GetMapping("/sacuvaj/{id}")
-    public ResponseEntity<String> sacuvajOglas(@PathVariable Long id) {
-        return new ResponseEntity<>(oglasiService.sacuvaj(id), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> sacuvajOglas(@PathVariable String id) {
+        ResponseDto response = ResponseDto.builder().poruka(oglasiService.sacuvaj(Long.parseLong(id))).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/izbrisiSacuvan/{id}")
-    public ResponseEntity<String> izbrisiSacuvanOglas(@PathVariable Long id) {
-        return new ResponseEntity<>(oglasiService.izbrisiSacuvan(id), HttpStatus.OK);
+    public ResponseEntity<ResponseDto> izbrisiSacuvanOglas(@PathVariable String id) {
+        ResponseDto response = ResponseDto.builder().poruka(oglasiService.izbrisiSacuvan(Long.parseLong(id))).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @GetMapping("/pretraga")
+    public ResponseEntity<ResponseDto> pretraga(@SearchSpec Specification<Oglas> kriterijumi) {
+        ResponseDto response = ResponseDto.builder().oglasi(oglasiService.pretraga(kriterijumi)).poruka("Vraceni rezultati pretrage").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }

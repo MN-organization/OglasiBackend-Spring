@@ -32,4 +32,6 @@ public class Oglas {
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "id")
     private User user;
+    @Transient
+    private boolean sacuvan;
 }
