@@ -29,11 +29,6 @@ public class AuthController {
         return new ResponseEntity<>("Uspesna registracija", HttpStatus.OK);
     }
 
-    @GetMapping("/proba")
-    public ResponseEntity<String> vrati() {
-        return new ResponseEntity<>("test", HttpStatus.OK);
-    }
-
     @GetMapping("/verifikacija/{token}")
     public ResponseEntity<String> verifyUser(@PathVariable String token) {
         Optional<Verifikacija> ver = verifikacijaRepository.findByToken(token);

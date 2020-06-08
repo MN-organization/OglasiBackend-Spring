@@ -104,9 +104,11 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public User getCurrentUser() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        return userRepository.findByEmail(principal.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found - " + principal.getUsername()));
+        try {
+            org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
+                    getContext().getAuthentication().getPrincipal();
+            return userRepository.findByEmail(principal.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found - " + principal.getUsername()));
+        }catch (ClassCastException e){ return null;}
     }
 }

@@ -1,5 +1,6 @@
 package modeli;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -29,8 +30,8 @@ public class Oglas {
     private int kubikaza;
     private String menjac;
     private String slika;
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JsonIgnore
     private User user;
     @Transient
     private boolean sacuvan;

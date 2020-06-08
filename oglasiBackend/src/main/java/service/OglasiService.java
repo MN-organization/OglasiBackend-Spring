@@ -30,14 +30,16 @@ public class OglasiService {
     @Transactional(readOnly = true)
     public List<Oglas> vratiSve() {
         List<Oglas> oglasi = oglasiRepository.findAll();
-        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
-        oglasi.forEach(oglas -> {
-            sacuvaniOglasi.forEach(sacuvaniOglas -> {
-                if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
-                    oglas.setSacuvan(true);
-                }
+        if (authService.getCurrentUser() != null) {
+            List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+            oglasi.forEach(oglas -> {
+                sacuvaniOglasi.forEach(sacuvaniOglas -> {
+                    if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
+                        oglas.setSacuvan(true);
+                    }
+                });
             });
-        });
+        }
         return oglasi;
     }
 
@@ -130,17 +132,19 @@ public class OglasiService {
         }
     }
 
-
+    @Transactional(readOnly = true)
     public List<Oglas> pretraga(Specification<Oglas> kriterijumi) {
         List<Oglas> oglasi = oglasiRepository.findAll(Specification.where(kriterijumi));
-        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
-        oglasi.forEach(oglas -> {
-            sacuvaniOglasi.forEach(sacuvaniOglas -> {
-                if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
-                    oglas.setSacuvan(true);
-                }
+        if (authService.getCurrentUser() != null) {
+            List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+            oglasi.forEach(oglas -> {
+                sacuvaniOglasi.forEach(sacuvaniOglas -> {
+                    if (oglas.getId() == sacuvaniOglas.getOglas().getId()) {
+                        oglas.setSacuvan(true);
+                    }
+                });
             });
-        });
+        }
         return oglasi;
     }
 }
