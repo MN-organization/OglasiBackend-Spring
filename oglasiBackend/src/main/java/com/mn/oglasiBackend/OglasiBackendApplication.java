@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 @EnableAsync
 @SpringBootApplication
 @EntityScan(basePackages = {"modeli"})
-@ComponentScan(basePackages = {"security","controller","repozitorijumi","service"})
+@ComponentScan(basePackages = {"security","controller","repozitorijumi","service", "paypal"})
 @EnableJpaRepositories(basePackages = {"repozitorijumi"})
 public class OglasiBackendApplication {
 

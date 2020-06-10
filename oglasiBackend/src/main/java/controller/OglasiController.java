@@ -4,10 +4,12 @@ import com.sipios.springsearch.anotation.SearchSpec;
 import dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import modeli.Oglas;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import paypal.CreateOrder;
 import service.OglasiService;
 
 import java.util.List;
@@ -16,6 +18,9 @@ import java.util.List;
 @RequestMapping("/api/oglasi")
 @AllArgsConstructor
 public class OglasiController {
+
+    @Autowired
+    private CreateOrder createOrder;
 
     private final OglasiService oglasiService;
 
@@ -41,6 +46,7 @@ public class OglasiController {
     @GetMapping
     public ResponseEntity<ResponseDto> vratiSve() {
         ResponseDto response = ResponseDto.builder().oglasi(oglasiService.vratiSve()).poruka("Uspesno vraceno sve").build();
+        createOrder.nesto();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
