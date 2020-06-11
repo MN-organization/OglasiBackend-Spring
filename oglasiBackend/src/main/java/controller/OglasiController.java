@@ -19,8 +19,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OglasiController {
 
-    @Autowired
-    private CreateOrder createOrder;
+
 
     private final OglasiService oglasiService;
 
@@ -46,7 +45,6 @@ public class OglasiController {
     @GetMapping
     public ResponseEntity<ResponseDto> vratiSve() {
         ResponseDto response = ResponseDto.builder().oglasi(oglasiService.vratiSve()).poruka("Uspesno vraceno sve").build();
-        createOrder.nesto();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
