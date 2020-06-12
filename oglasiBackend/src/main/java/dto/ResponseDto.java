@@ -16,4 +16,5 @@ public class ResponseDto {
     private List<Oglas> oglasi;
     private String poruka;
     private Oglas oglas;
+    private String hes;
 }
