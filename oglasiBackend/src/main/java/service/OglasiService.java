@@ -72,11 +72,22 @@ public class OglasiService {
 
     @Transactional
     public Oglas izmeniOglas(Oglas oglas) {
-        Optional<Oglas> o = oglasiRepository.findById(oglas.getId());
-        if (o.isPresent()) {
-            if (o.get().getUser().getId() == authService.getCurrentUser().getId()) {
-                oglas.setUser(authService.getCurrentUser());
-                return oglasiRepository.save(oglas);
+        Optional<Oglas> og = oglasiRepository.findById(oglas.getId());
+        if (og.isPresent()) {
+            if (og.get().getUser().getId() == authService.getCurrentUser().getId()) {
+                Oglas o = og.get();
+                o.setNaslov(oglas.getNaslov());
+                o.setOpis(oglas.getOpis());
+                o.setCena(oglas.getCena());
+                o.setMarka(oglas.getMarka());
+                o.setModel(oglas.getModel());
+                o.setGodiste(oglas.getGodiste());
+                o.setKilometraza(oglas.getKilometraza());
+                o.setGorivo(oglas.getGorivo());
+                o.setSnaga(oglas.getSnaga());
+                o.setKubikaza(oglas.getKubikaza());
+                o.setMenjac(oglas.getMenjac());
+                return oglasiRepository.save(o);
             } else {
                 throw new RuntimeException("Moguce je menjati samo sopstvene oglase");
             }

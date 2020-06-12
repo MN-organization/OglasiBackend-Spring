@@ -1,9 +1,11 @@
 package controller;
 
 import com.sipios.springsearch.anotation.SearchSpec;
+import dto.OglasDto;
 import dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import modeli.Oglas;
+import modeli.Slika;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
@@ -12,16 +14,36 @@ import org.springframework.web.bind.annotation.*;
 import paypal.CreateOrder;
 import service.OglasiService;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/oglasi")
 @AllArgsConstructor
 public class OglasiController {
 
-
-
     private final OglasiService oglasiService;
+
+    Map<String, String> slikeMapa;
+
+    @PostMapping("/slike")
+    public ResponseEntity<ResponseDto> postaviSlike(@RequestBody String slika) {
+        System.out.println(slika);
+        String hes = UUID.randomUUID().toString();
+        slikeMapa.put(hes, slika);
+        ResponseDto responseDto = ResponseDto.builder().hes(hes).build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/slike/obrisi/{hes}")
+    public ResponseEntity<ResponseDto> obrisiSliku(@PathVariable String hes) {
+        slikeMapa.remove(hes);
+        System.out.println(slikeMapa);
+        ResponseDto responseDto = ResponseDto.builder().poruka("obrisana slika").build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> vratiOglas(@PathVariable Long id) {
@@ -50,7 +72,19 @@ public class OglasiController {
     }
 
     @PostMapping("/dodaj")
-    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas) {
+    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody OglasDto oglasDto) {
+        Oglas oglas = OglasDto.dtoToOglas(oglasDto);
+        List<Slika> listaSlika = new ArrayList<>();
+        for (String slika : oglasDto.getSlike()) {
+            Slika slicica = new Slika();
+            if(slikeMapa.get(slika) != null) {
+                slicica.setSlika(slikeMapa.get(slika));
+            }
+            listaSlika.add(slicica);
+        }
+        oglas.setSlike(listaSlika);
+        System.out.println("Oglas koji nam treba:");
+        System.out.println(oglas);
         ResponseDto response = ResponseDto.builder().oglas(oglasiService.save(oglas)).poruka("Uspesno Postavljen oglas").build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

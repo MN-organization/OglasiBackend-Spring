@@ -29,7 +29,8 @@ public class Oglas {
     private int snaga;
     private int kubikaza;
     private String menjac;
-    private String slika;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Slika> slike;
     @ManyToOne(fetch = FetchType.LAZY)
     @JsonIgnore
     private User user;
