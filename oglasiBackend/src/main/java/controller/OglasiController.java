@@ -35,9 +35,10 @@ public class OglasiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+
     @PostMapping("/{id}")
-    public ResponseEntity<ResponseDto> izmeniOglas(@PathVariable Long id) {
-        ResponseDto response = ResponseDto.builder().oglas(oglasiService.izmeniOglas(id)).poruka("Uspesno izmenjen oglas").build();
+    public ResponseEntity<ResponseDto> izmeniOglas(@PathVariable Long id, @RequestBody Oglas oglas) {
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.izmeniOglas(oglas)).poruka("Uspesno izmenjen oglas").build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

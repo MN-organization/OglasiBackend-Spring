@@ -61,7 +61,6 @@ public class OglasiService {
         if (o.isPresent()) {
             if (o.get().getUser().getId() == authService.getCurrentUser().getId()) {
                 oglasiRepository.deleteById(id);
-                ;
             } else {
                 throw new RuntimeException("Moguce je brisati samo sopstvene oglase");
             }
@@ -72,11 +71,12 @@ public class OglasiService {
     }
 
     @Transactional
-    public Oglas izmeniOglas(Long id) {
-        Optional<Oglas> o = oglasiRepository.findById(id);
+    public Oglas izmeniOglas(Oglas oglas) {
+        Optional<Oglas> o = oglasiRepository.findById(oglas.getId());
         if (o.isPresent()) {
             if (o.get().getUser().getId() == authService.getCurrentUser().getId()) {
-                return oglasiRepository.save(o.get());
+                oglas.setUser(authService.getCurrentUser());
+                return oglasiRepository.save(oglas);
             } else {
                 throw new RuntimeException("Moguce je menjati samo sopstvene oglase");
             }
