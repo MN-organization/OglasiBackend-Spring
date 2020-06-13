@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import modeli.Oglas;
+import modeli.Slika;
 
 import java.util.List;
 
@@ -17,4 +18,5 @@ public class ResponseDto {
     private String poruka;
     private Oglas oglas;
     private String hes;
+    private Slika slika;
 }

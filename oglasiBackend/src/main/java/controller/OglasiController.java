@@ -29,12 +29,12 @@ public class OglasiController {
     Map<String, String> slikeMapa;
 
     @PostMapping("/slike")
-    public ResponseEntity<ResponseDto> postaviSlike(@RequestBody String slika) {
-        System.out.println(slika);
-        String hes = UUID.randomUUID().toString();
-        slikeMapa.put(hes, slika);
-        ResponseDto responseDto = ResponseDto.builder().hes(hes).build();
-        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+        public ResponseEntity<ResponseDto> postaviSlike(@RequestBody String slika) {
+            System.out.println(slika);
+            String hes = UUID.randomUUID().toString();
+            slikeMapa.put(hes, slika);
+            ResponseDto responseDto = ResponseDto.builder().hes(hes).build();
+            return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
     @DeleteMapping("/slike/obrisi/{hes}")
@@ -42,6 +42,33 @@ public class OglasiController {
         slikeMapa.remove(hes);
         System.out.println(slikeMapa);
         ResponseDto responseDto = ResponseDto.builder().poruka("obrisana slika").build();
+        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+//    @PostMapping("/slike/edit/{idOglas}")
+//    public ResponseEntity<ResponseDto> dodajSlikuEdit(@PathVariable Long idOglas, @RequestBody String slika) {
+//        Oglas o = oglasiService.vratiOglas(idOglas);
+//        Slika slika1 = new Slika();
+//        slika1.setSlika(slika);
+//        o.getSlike().add(slika1);
+//        oglasiService.save(o);
+//        System.out.println(slika1);
+//        ResponseDto responseDto = ResponseDto.builder().slika(slika1).poruka("uspesno dodata slika").build();
+//        return new ResponseEntity<>(responseDto, HttpStatus.OK);
+//    }
+
+    @DeleteMapping("/slike/obrisi/{idOglas}/{idSlike}")
+    public ResponseEntity<ResponseDto> obrisiSlikuEdit(@PathVariable Long idOglas, @PathVariable Long idSlike) {
+        Oglas o = oglasiService.vratiOglas(idOglas);
+        Slika slik = new Slika();
+        for (Slika slika : o.getSlike()){
+            if(slika.getId() == idSlike) {
+                slik = slika;
+            }
+        };
+        o.getSlike().remove(slik);
+        oglasiService.save(o);
+        ResponseDto responseDto = ResponseDto.builder().poruka("obrisana slika edit").build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
 
@@ -72,13 +99,13 @@ public class OglasiController {
     }
 
     @PostMapping("/dodaj")
-    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody OglasDto oglasDto) {
-        Oglas oglas = OglasDto.dtoToOglas(oglasDto);
+    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas) {
+//        Oglas oglas = OglasDto.dtoToOglas(oglasDto);
         List<Slika> listaSlika = new ArrayList<>();
-        for (String slika : oglasDto.getSlike()) {
+        for (Slika slika : oglas.getSlike()) {
             Slika slicica = new Slika();
-            if(slikeMapa.get(slika) != null) {
-                slicica.setSlika(slikeMapa.get(slika));
+            if(slikeMapa.get(slika.getSlika()) != null) {
+                slicica.setSlika(slikeMapa.get(slika.getSlika()));
             }
             listaSlika.add(slicica);
         }
