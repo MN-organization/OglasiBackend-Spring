@@ -21,8 +21,10 @@ public class Oglas {
     @Nullable
     private String opis;
     private double cena;
-    private String marka;
-    private String model;
+//    private String marka;
+//    private String model;
+    @OneToOne
+    private Model model;
     private int godiste;
     private int kilometraza;
     private String gorivo;

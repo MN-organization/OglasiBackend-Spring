@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import modeli.Marka;
+import modeli.Model;
 import modeli.Oglas;
 import modeli.Slika;
 
@@ -19,4 +21,6 @@ public class ResponseDto {
     private Oglas oglas;
     private String hes;
     private Slika slika;
+    private List<Marka> marke;
+    private List<Model> modeli;
 }

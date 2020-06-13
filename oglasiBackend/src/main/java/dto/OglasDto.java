@@ -58,23 +58,23 @@ public class OglasDto {
 //        return oglasiDto;
 //    }
 
-    public static Oglas dtoToOglas(OglasDto oglasDto) {
-        Oglas o = new Oglas();
-        o.setId(oglasDto.getId());
-        o.setNaslov(oglasDto.getNaslov());
-        o.setOpis(oglasDto.getOpis());
-        o.setCena(oglasDto.getCena());
-        o.setMarka(oglasDto.getMarka());
-        o.setModel(oglasDto.getModel());
-        o.setGodiste(oglasDto.getGodiste());
-        o.setKilometraza(oglasDto.getKilometraza());
-        o.setGorivo(oglasDto.getGorivo());
-        o.setSnaga(oglasDto.getSnaga());
-        o.setKubikaza(oglasDto.getKubikaza());
-        o.setMenjac(oglasDto.getMenjac());
-        o.setUser(oglasDto.getUser());
-
-        return o;
-    }
+//    public static Oglas dtoToOglas(OglasDto oglasDto) {
+//        Oglas o = new Oglas();
+//        o.setId(oglasDto.getId());
+//        o.setNaslov(oglasDto.getNaslov());
+//        o.setOpis(oglasDto.getOpis());
+//        o.setCena(oglasDto.getCena());
+//        o.setMarka(oglasDto.getMarka());
+//        o.setModel(oglasDto.getModel());
+//        o.setGodiste(oglasDto.getGodiste());
+//        o.setKilometraza(oglasDto.getKilometraza());
+//        o.setGorivo(oglasDto.getGorivo());
+//        o.setSnaga(oglasDto.getSnaga());
+//        o.setKubikaza(oglasDto.getKubikaza());
+//        o.setMenjac(oglasDto.getMenjac());
+//        o.setUser(oglasDto.getUser());
+//
+//        return o;
+//    }
 
 }

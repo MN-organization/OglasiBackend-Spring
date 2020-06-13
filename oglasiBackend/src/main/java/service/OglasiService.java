@@ -79,7 +79,7 @@ public class OglasiService {
                 o.setNaslov(oglas.getNaslov());
                 o.setOpis(oglas.getOpis());
                 o.setCena(oglas.getCena());
-                o.setMarka(oglas.getMarka());
+//                o.setMarka(oglas.getMarka());
                 o.setModel(oglas.getModel());
                 o.setGodiste(oglas.getGodiste());
                 o.setKilometraza(oglas.getKilometraza());
