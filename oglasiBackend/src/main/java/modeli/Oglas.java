@@ -27,10 +27,12 @@ public class Oglas {
     private Model model;
     private int godiste;
     private int kilometraza;
-    private String gorivo;
+    @ManyToOne
+    private Gorivo gorivo;
     private int snaga;
     private int kubikaza;
-    private String menjac;
+    @ManyToOne
+    private Menjac menjac;
     @OneToMany(cascade = CascadeType.ALL)
     private List<Slika> slike;
     @ManyToOne(fetch = FetchType.LAZY)

@@ -98,8 +98,8 @@ public class OglasiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/dodaj")
-    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas) {
+    @PostMapping("/dodaj/{orderID}")
+    public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas,@PathVariable String orderID) {
 //        Oglas oglas = OglasDto.dtoToOglas(oglasDto);
         List<Slika> listaSlika = new ArrayList<>();
         for (Slika slika : oglas.getSlike()) {
@@ -112,7 +112,7 @@ public class OglasiController {
         oglas.setSlike(listaSlika);
         System.out.println("Oglas koji nam treba:");
         System.out.println(oglas);
-        ResponseDto response = ResponseDto.builder().oglas(oglasiService.save(oglas)).poruka("Uspesno Postavljen oglas").build();
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.saveSaOrderID(oglas,orderID)).poruka("Uspesno Postavljen oglas").build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

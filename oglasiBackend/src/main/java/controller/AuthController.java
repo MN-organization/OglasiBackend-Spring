@@ -3,6 +3,7 @@ package controller;
 import dto.AuthenticationResponse;
 import dto.LoginRequest;
 import dto.RegisterRequest;
+import dto.ResponseDto;
 import lombok.AllArgsConstructor;
 import modeli.Verifikacija;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,11 @@ public class AuthController {
     private final VerifikacijaRepository verifikacijaRepository;
 
     @PostMapping("/signup")
-    public ResponseEntity<String> signup(@RequestBody RegisterRequest registerRequest) throws IOException {
+    public ResponseEntity<ResponseDto> signup(@RequestBody RegisterRequest registerRequest) throws IOException {
         System.out.println(registerRequest + " - usao");
         authService.signup(registerRequest);
-        return new ResponseEntity<>("Uspesna registracija", HttpStatus.OK);
+        ResponseDto response = ResponseDto.builder().poruka("Uspesna registracija").build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/verifikacija/{token}")

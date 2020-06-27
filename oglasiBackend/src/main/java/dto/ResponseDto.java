@@ -4,10 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import modeli.Marka;
-import modeli.Model;
-import modeli.Oglas;
-import modeli.Slika;
+import modeli.*;
 
 import java.util.List;
 
@@ -23,4 +20,6 @@ public class ResponseDto {
     private Slika slika;
     private List<Marka> marke;
     private List<Model> modeli;
+    private List<Gorivo> goriva;
+    private List<Menjac> menjaci;
 }

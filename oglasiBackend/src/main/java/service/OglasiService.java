@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import paypal.CaptureOrder;
 import repozitorijumi.OglasiRepository;
 import repozitorijumi.SacuvaniOglasRepository;
 
@@ -26,6 +27,7 @@ public class OglasiService {
     private final OglasiRepository oglasiRepository;
     private final SacuvaniOglasRepository sacuvaniOglasRepository;
     private final AuthService authService;
+    private final CaptureOrder captureOrder;
 
     @Transactional(readOnly = true)
     public List<Oglas> vratiSve() {
@@ -41,6 +43,13 @@ public class OglasiService {
             });
         }
         return oglasi;
+    }
+
+    @Transactional
+    public Oglas saveSaOrderID(Oglas oglas,String orderID) {
+        oglas.setUser(authService.getCurrentUser());
+        captureOrder.capture(orderID);
+        return oglasiRepository.save(oglas);
     }
 
     @Transactional
