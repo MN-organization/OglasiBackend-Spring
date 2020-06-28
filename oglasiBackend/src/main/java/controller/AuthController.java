@@ -26,8 +26,8 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto> signup(@RequestBody RegisterRequest registerRequest) throws IOException {
         System.out.println(registerRequest + " - usao");
-        authService.signup(registerRequest);
-        ResponseDto response = ResponseDto.builder().poruka("Uspesna registracija").build();
+        String porukaOregistraciji = authService.signup(registerRequest);
+        ResponseDto response = ResponseDto.builder().poruka(porukaOregistraciji).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

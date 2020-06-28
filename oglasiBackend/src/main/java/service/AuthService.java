@@ -27,6 +27,7 @@ import security.JwtProvider;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,7 +51,11 @@ public class AuthService {
     @Autowired
     private RefreshTokenService refreshTokenService;
 
-    public void signup(RegisterRequest registerRequest) throws IOException {
+    public String signup(RegisterRequest registerRequest) throws IOException {
+        Optional<User> user1 = userRepository.findByEmail(registerRequest.getEmail());
+        if(user1.isPresent()) {
+            return "Nalog sa datim e-mail-om vec postoji";
+        }
         User user = new User();
         System.out.println(registerRequest.getEmail());
         user.setEmail(registerRequest.getEmail());
@@ -61,6 +66,7 @@ public class AuthService {
         Verifikacija verifikacija = generateVerificationToken(user);
 
         sendEmail(verifikacija);
+        return "Uspesna registracija. Proverite Vas e-mail!";
     }
 
     @Async
