@@ -1,6 +1,8 @@
 package service;
 
+import com.sipios.springsearch.SpecificationImpl;
 import lombok.AllArgsConstructor;
+import modeli.AktivnostOglasa;
 import modeli.Oglas;
 import modeli.SacuvaniOglas;
 import modeli.User;
@@ -15,10 +17,7 @@ import paypal.CaptureOrder;
 import repozitorijumi.OglasiRepository;
 import repozitorijumi.SacuvaniOglasRepository;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @AllArgsConstructor
@@ -31,7 +30,8 @@ public class OglasiService {
 
     @Transactional(readOnly = true)
     public List<Oglas> vratiSve() {
-        List<Oglas> oglasi = oglasiRepository.findAll();
+//        List<Oglas> oglasi = oglasiRepository.findAll();
+        List<Oglas> oglasi = oglasiRepository.findAllByAktivanTrue();
         if (authService.getCurrentUser() != null) {
             List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
             oglasi.forEach(oglas -> {
@@ -48,6 +48,11 @@ public class OglasiService {
     @Transactional
     public Oglas saveSaOrderID(Oglas oglas,String orderID) {
         oglas.setUser(authService.getCurrentUser());
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, 1);
+        AktivnostOglasa aktivnostOglasa = new AktivnostOglasa(null, new Date(), c.getTime(), orderID);
+        oglas.setAktivnostOglasa(aktivnostOglasa);
+        oglas.setAktivan(true);
         captureOrder.capture(orderID);
         return oglasiRepository.save(oglas);
     }
@@ -113,7 +118,7 @@ public class OglasiService {
 
     @Transactional(readOnly = true)
     public List<Oglas> vratiSacuvaneOglase() {
-        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
+        List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUserAndOglas_Aktivan(authService.getCurrentUser(), true);
         ArrayList<Oglas> oglasi = new ArrayList<>();
         sacuvaniOglasi.forEach(sacuvaniOglas -> oglasi.add(sacuvaniOglas.getOglas()));
         return oglasi;
@@ -154,7 +159,13 @@ public class OglasiService {
 
     @Transactional(readOnly = true)
     public List<Oglas> pretraga(Specification<Oglas> kriterijumi) {
-        List<Oglas> oglasi = oglasiRepository.findAll(Specification.where(kriterijumi));
+        List<Oglas> oglasi1 = oglasiRepository.findAll(Specification.where(kriterijumi));
+        List<Oglas> oglasi = new ArrayList<>();
+        oglasi1.forEach(oglas -> {
+            if(oglas.isAktivan()) {
+                oglasi.add(oglas);
+            }
+        });
         if (authService.getCurrentUser() != null) {
             List<SacuvaniOglas> sacuvaniOglasi = sacuvaniOglasRepository.findByUser(authService.getCurrentUser());
             oglasi.forEach(oglas -> {
@@ -166,5 +177,25 @@ public class OglasiService {
             });
         }
         return oglasi;
+    }
+
+    @Transactional
+    public String obnoviOglas(Oglas oglas, String orderID) {
+        Optional<Oglas> oglasic = oglasiRepository.findById(oglas.getId());
+        if(oglasic.isPresent()) {
+            Oglas o = oglasic.get();
+            o.setAktivan(true);
+            AktivnostOglasa novaAktivnost = o.getAktivnostOglasa();
+            novaAktivnost.setVremeOglasavanja(new Date());
+            Calendar c = Calendar.getInstance();
+            c.add(Calendar.MONTH, 1);
+            novaAktivnost.setVremeIsticanja(c.getTime());
+            novaAktivnost.setPaypallID(orderID);
+            captureOrder.capture(orderID);
+            oglasiRepository.save(o);
+            return "Oglas uspesno obnovljen!";
+        } else {
+            return "Oglas ne postoji!";
+        }
     }
 }

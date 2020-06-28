@@ -147,4 +147,10 @@ public class OglasiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PostMapping("/obnova/{orderID}")
+    public ResponseEntity<ResponseDto> obnovaOglasa(@PathVariable String orderID, @RequestBody Oglas oglas) {
+        ResponseDto response = ResponseDto.builder().poruka(oglasiService.obnoviOglas(oglas, orderID)).build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
 }

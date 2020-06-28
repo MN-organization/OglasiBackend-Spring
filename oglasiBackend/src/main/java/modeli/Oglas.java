@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Cascade;
 import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
@@ -40,4 +41,7 @@ public class Oglas {
     private User user;
     @Transient
     private boolean sacuvan;
+    @OneToOne(cascade = CascadeType.ALL)
+    private AktivnostOglasa aktivnostOglasa;
+    private boolean aktivan;
 }
