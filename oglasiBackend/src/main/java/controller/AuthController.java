@@ -1,9 +1,6 @@
 package controller;
 
-import dto.AuthenticationResponse;
-import dto.LoginRequest;
-import dto.RegisterRequest;
-import dto.ResponseDto;
+import dto.*;
 import lombok.AllArgsConstructor;
 import modeli.Verifikacija;
 import org.springframework.http.HttpStatus;
@@ -11,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import repozitorijumi.VerifikacijaRepository;
 import service.AuthService;
+import service.RefreshTokenService;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -21,6 +19,7 @@ import java.util.Optional;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenService refreshTokenService;
     private final VerifikacijaRepository verifikacijaRepository;
 
     @PostMapping("/signup")
@@ -62,5 +61,16 @@ public class AuthController {
         return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
     }
 
+    @GetMapping("/refresh/token/{refreshToken}")
+    public AuthenticationResponse refreshTokens(@PathVariable String refreshToken) {
+        System.out.println("get za refresh token");
+        return authService.refreshToken(refreshToken);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        refreshTokenService.deleteRefreshToken(refreshTokenRequest.getRefreshToken());
+        return ResponseEntity.status(HttpStatus.OK).body("Refresh Token uspesno izbrisan!");
+    }
 
 }

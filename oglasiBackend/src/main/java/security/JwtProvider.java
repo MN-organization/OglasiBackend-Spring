@@ -64,8 +64,12 @@ public class JwtProvider {
     }
 
     public boolean validateToken(String jwt) {
-        parserBuilder().setSigningKey(getPublickey()).build().parseClaimsJws(jwt);
-        return true;
+        //try {
+            parserBuilder().setSigningKey(getPublickey()).build().parseClaimsJws(jwt);
+            return true;
+        //}catch (Exception e){
+         //   return false;
+        //}
     }
 
     private PublicKey getPublickey() {

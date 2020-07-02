@@ -3,9 +3,11 @@ package service;
 
 import dto.AuthenticationResponse;
 import dto.LoginRequest;
+import dto.RefreshTokenRequest;
 import dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import modeli.RefreshToken;
 import modeli.User;
 import modeli.Verifikacija;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,7 +104,7 @@ public class AuthService {
         String token = jwtProvider.generateToken(authenticate);
         return AuthenticationResponse.builder()
                 .authenticationToken(token)
-                .refreshToken(refreshTokenService.generateRefreshToken().getToken())
+                .refreshToken(refreshTokenService.generateRefreshToken(getCurrentUser()).getToken())
                 .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
                 .email(loginRequest.getEmail())
                 .build();
@@ -116,5 +118,18 @@ public class AuthService {
             return userRepository.findByEmail(principal.getUsername())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found - " + principal.getUsername()));
         }catch (ClassCastException e){ return null;}
+    }
+
+    public AuthenticationResponse refreshToken(String refreshToken) {
+        System.out.println(refreshToken);
+        RefreshToken rt = refreshTokenService.validateRefreshToken(refreshToken);
+        String token = jwtProvider.generateTokenWithUserName(rt.getUser().getEmail());
+        rt= refreshTokenService.refreshRefreshToken(refreshToken);
+        return AuthenticationResponse.builder()
+                .authenticationToken(token)
+                .refreshToken(rt.getToken())
+                .expiresAt(Instant.now().plusMillis(jwtProvider.getJwtExpirationInMillis()))
+                .email(rt.getUser().getEmail())
+                .build();
     }
 }

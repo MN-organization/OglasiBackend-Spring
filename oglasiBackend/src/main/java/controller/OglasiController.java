@@ -1,23 +1,21 @@
 package controller;
 
 import com.sipios.springsearch.anotation.SearchSpec;
-import dto.OglasDto;
 import dto.ResponseDto;
 import lombok.AllArgsConstructor;
+import modeli.AktivnostOglasa;
 import modeli.Oglas;
 import modeli.Slika;
-import org.springframework.beans.factory.annotation.Autowired;
+import modeli.SlikaBafer;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import paypal.CreateOrder;
 import service.OglasiService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/oglasi")
@@ -26,13 +24,13 @@ public class OglasiController {
 
     private final OglasiService oglasiService;
 
-    Map<String, String> slikeMapa;
+    Map<String, SlikaBafer> slikeMapa;
 
     @PostMapping("/slike")
         public ResponseEntity<ResponseDto> postaviSlike(@RequestBody String slika) {
             System.out.println(slika);
             String hes = UUID.randomUUID().toString();
-            slikeMapa.put(hes, slika);
+            slikeMapa.put(hes, new SlikaBafer(slika, new Date()));
             ResponseDto responseDto = ResponseDto.builder().hes(hes).build();
             return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -105,7 +103,7 @@ public class OglasiController {
         for (Slika slika : oglas.getSlike()) {
             Slika slicica = new Slika();
             if(slikeMapa.get(slika.getSlika()) != null) {
-                slicica.setSlika(slikeMapa.get(slika.getSlika()));
+                slicica.setSlika(slikeMapa.get(slika.getSlika()).getSlika());
             }
             listaSlika.add(slicica);
         }
@@ -153,4 +151,14 @@ public class OglasiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Transactional
+    @Scheduled(fixedDelay = 60000)
+    public void scheduleFixedDelayTask() {
+        slikeMapa.forEach((s, slikaBafer) -> {
+            if(slikaBafer.getVremePostavljanja().getTime()+1800000 < new Date().getTime()){
+                slikeMapa.remove(s);
+                System.out.println("//////////////////////////////////////////////////////izbrisana slika istekla");
+            }
+        });
+    }
 }

@@ -22,11 +22,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/api/auth/**")
-                .permitAll()
+                .antMatchers("/api/auth/**").permitAll()
+                .antMatchers("/api/oglasi/slike/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/api/oglasi/{id}/").authenticated()
+                .antMatchers(HttpMethod.DELETE,"/api/oglasi/{id}/").authenticated()
+                .antMatchers("/api/oglasi/dodaj/{orderID}/").authenticated()
+                .antMatchers("/api/oglasi/moji/").authenticated()
+                .antMatchers("/api/oglasi/sacuvani/").authenticated()
+                .antMatchers("/api/oglasi/sacuvaj/{id}/").authenticated()
+                .antMatchers("/api/oglasi/izbrisiSacuvan/{id}/").authenticated()
+                .antMatchers("/api/oglasi/obnova/{orderID}/").authenticated()
                 .anyRequest()
                 .permitAll();
-//                .authenticated();
+              //.authenticated();
     }
 
     @Autowired
