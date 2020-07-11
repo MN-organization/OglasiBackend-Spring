@@ -24,7 +24,6 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<ResponseDto> signup(@RequestBody RegisterRequest registerRequest) throws IOException {
-        System.out.println(registerRequest + " - usao");
         String porukaOregistraciji = authService.signup(registerRequest);
         ResponseDto response = ResponseDto.builder().poruka(porukaOregistraciji).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -57,13 +56,11 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponse> login(@RequestBody LoginRequest loginRequest) throws IOException {
-        System.out.println(loginRequest + " - usao");
         return new ResponseEntity<>(authService.login(loginRequest), HttpStatus.OK);
     }
 
     @GetMapping("/refresh/token/{refreshToken}")
     public AuthenticationResponse refreshTokens(@PathVariable String refreshToken) {
-        System.out.println("get za refresh token");
         return authService.refreshToken(refreshToken);
     }
 

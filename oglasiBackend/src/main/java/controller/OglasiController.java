@@ -28,7 +28,6 @@ public class OglasiController {
 
     @PostMapping("/slike")
         public ResponseEntity<ResponseDto> postaviSlike(@RequestBody String slika) {
-            System.out.println(slika);
             String hes = UUID.randomUUID().toString();
             slikeMapa.put(hes, new SlikaBafer(slika, new Date()));
             ResponseDto responseDto = ResponseDto.builder().hes(hes).build();
@@ -38,7 +37,6 @@ public class OglasiController {
     @DeleteMapping("/slike/obrisi/{hes}")
     public ResponseEntity<ResponseDto> obrisiSliku(@PathVariable String hes) {
         slikeMapa.remove(hes);
-        System.out.println(slikeMapa);
         ResponseDto responseDto = ResponseDto.builder().poruka("obrisana slika").build();
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
     }
@@ -72,7 +70,12 @@ public class OglasiController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResponseDto> vratiOglas(@PathVariable Long id) {
-        ResponseDto response = ResponseDto.builder().oglas(oglasiService.vratiOglas(id)).poruka("Uspesno vracen oglas").build();
+        Oglas oglas = oglasiService.vratiOglas(id);
+        String poruka = "Uspesno vracen oglas";
+        if(oglas == null) {
+            poruka = "Neuspesno vracen oglas";
+        }
+        ResponseDto response = ResponseDto.builder().oglas(oglas).poruka(poruka).build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -98,7 +101,6 @@ public class OglasiController {
 
     @PostMapping("/dodaj/{orderID}")
     public ResponseEntity<ResponseDto> postaviOglas(@RequestBody Oglas oglas,@PathVariable String orderID) {
-//        Oglas oglas = OglasDto.dtoToOglas(oglasDto);
         List<Slika> listaSlika = new ArrayList<>();
         for (Slika slika : oglas.getSlike()) {
             Slika slicica = new Slika();
@@ -108,9 +110,7 @@ public class OglasiController {
             listaSlika.add(slicica);
         }
         oglas.setSlike(listaSlika);
-        System.out.println("Oglas koji nam treba:");
-        System.out.println(oglas);
-        ResponseDto response = ResponseDto.builder().oglas(oglasiService.saveSaOrderID(oglas,orderID)).poruka("Uspesno Postavljen oglas").build();
+        ResponseDto response = ResponseDto.builder().oglas(oglasiService.saveSaOrderID(oglas,orderID)).poruka("Uspesno postavljen oglas").build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

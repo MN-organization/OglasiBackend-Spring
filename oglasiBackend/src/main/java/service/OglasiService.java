@@ -66,7 +66,10 @@ public class OglasiService {
     @Transactional(readOnly = true)
     public Oglas vratiOglas(Long id) {
         Optional<Oglas> o = oglasiRepository.findById(id);
-        return o.get();
+        if(o.isPresent()) {
+            return o.get();
+        }
+        return null;
     }
 
     @Transactional
@@ -112,7 +115,6 @@ public class OglasiService {
 
     @Transactional(readOnly = true)
     public List<Oglas> vratiMojeOglase() {
-        System.out.println(oglasiRepository.findByUser(authService.getCurrentUser()));
         return oglasiRepository.findByUser(authService.getCurrentUser());
     }
 
@@ -138,7 +140,6 @@ public class OglasiService {
 
     @Transactional
     public String izbrisiSacuvan(Long id) {
-
         SacuvaniOglas so = new SacuvaniOglas();
         so.setUser(authService.getCurrentUser());
         Optional<Oglas> o = oglasiRepository.findById(id);

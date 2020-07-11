@@ -121,10 +121,9 @@ public class AuthService {
     }
 
     public AuthenticationResponse refreshToken(String refreshToken) {
-        System.out.println(refreshToken);
         RefreshToken rt = refreshTokenService.validateRefreshToken(refreshToken);
         String token = jwtProvider.generateTokenWithUserName(rt.getUser().getEmail());
-        rt= refreshTokenService.refreshRefreshToken(refreshToken);
+        rt = refreshTokenService.refreshRefreshToken(refreshToken);
         return AuthenticationResponse.builder()
                 .authenticationToken(token)
                 .refreshToken(rt.getToken())
