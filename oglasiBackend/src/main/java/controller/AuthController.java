@@ -51,7 +51,20 @@ public class AuthController {
                     "    </div>\n" +
                     "</div></body>", HttpStatus.OK);
         }
-        return new ResponseEntity<>("Neuspesna verifikacija - token nije dobar", HttpStatus.OK);
+        return new ResponseEntity<>("<head><link rel=\"stylesheet\" href=\"https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css\" integrity=\"sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk\" crossorigin=\"anonymous\"></head><body><div class=\"container-fluid\">\n" +
+                "    <div class=\"row\">\n" +
+                "        <div class=\"col-md-12\">\n" +
+                "            <div class=\"jumbotron\">\n" +
+                "                <h2 class=\"text-center mb-4\">\n" +
+                "                    Neuspesna verifikacija - token nije dobar!\n" +
+                "                </h2>\n" +
+                "                <p>\n" +
+                "                    <a class=\"btn btn-primary btn-lg btn-block\" href=\"http://localhost:8100/auth\">Registrujte se opet</a>\n" +
+                "                </p>\n" +
+                "            </div>\n" +
+                "        </div>\n" +
+                "    </div>\n" +
+                "</div></body>", HttpStatus.OK);
     }
 
     @PostMapping("/login")
